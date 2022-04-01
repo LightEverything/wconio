@@ -38,11 +38,19 @@
 #define WCON_SCROSS          1
 
 #include <conio.h>
+#include <windows.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
+
+struct combination
+{
+    char* map;
+    int width;
+    int height;
+};
+typedef struct combination combination;
 
 void initwcon();
 void setConSize(int width, int height);
@@ -51,6 +59,8 @@ void setConSize(int width, int height);
 char whatKey(int mode);
 int  routputString(int x, int y, const char* str);
 int  outputString(int x, int y, const char* str);
+// 快速带颜色输出
+int  outputStringC(int x, int y, const char* str, WCON_COLOR fontColor, WCON_COLOR backColor);
 
 // 设置控制台标题
 int setTitle(const char* title);
@@ -71,6 +81,13 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style);
 
 //清除所有
 void cleanAll();
-void cleanline(int n);
+void cleanline();
+void cleanCharxy(int x, int y);
+void rcleanCharxy(int x, int y);
+void cleanChar();
+
+//构造combination(注意，这种构造函数返回的是combination而不是指针)
+void        outputCombination(int posX, int posY, combination image);
+combination getCombination(char* image, int width, int height);
 
 #endif //WCONIO_H_WCONIO_H

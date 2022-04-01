@@ -4,16 +4,19 @@
 
 #include "wconio.h"
 
-HANDLE hOut = NULL;
+HANDLE g_hOut = NULL;
+int g_height = WCON_DEFAULT_HEIGHT;
+int g_width  = WCON_DEFAULT_WIDTH;
 
 void initwcon()
 {
-    hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    g_hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
-    GetConsoleMode(hOut, &dwMode);
+    GetConsoleMode(g_hOut, &dwMode);
 
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
+    SetConsoleMode(g_hOut, dwMode);
+    setConSize(WCON_DEFAULT_WIDTH, WCON_DEFAULT_HEIGHT);
 }
 
 // 更改窗口大小
@@ -27,6 +30,9 @@ void setConSize(int width, int height)
         sprintf(command, "mode con cols=%d lines=%d", width, WCON_DEFAULT_HEIGHT);
     else
         sprintf(command, "mode con cols=%d lines=%d", width, height);
+
+    g_width = width;
+    g_height = height;
     system(command);
 }
 
@@ -43,9 +49,14 @@ char whatKey(int mode)
         else
             return WCON_NOHIT;
     }
-    else
+    else if (mode == 2)
     {
         char c = getchar();
+        return c;
+    }
+    else
+    {
+        char c= getch();
         return c;
     }
 }
@@ -104,9 +115,12 @@ void cleanAll()
     printf(WCON_CLEARN);
 }
 
-void cleanline(int n)
+void cleanline()
 {
-    printf(WCON_CLEARN_LINE "%dM", n);
+    printf(WCON_SAVE_CURSOR);
+    for (int i = 0; i < g_width; i++)
+        printf(" ");
+    printf(WCON_RE_CURSOR);
 }
 
 // 移动控制台光标
@@ -135,8 +149,8 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style)
         case WCON_SNORMAL:
             routputString(posX, posY, "l");
             routputString(posX + width, posY, "k");
-            routputString(posX + width, posY + width, "j");
-            routputString(posX, posY + width, "m");
+            routputString(posX + width, posY + height, "j");
+            routputString(posX, posY + height, "m");
             break;
         case WCON_SCROSS:
             routputString(posX, posY, "n");
@@ -145,4 +159,43 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style)
             routputString(posX, posY + width, "n");
     }
     printf(WCON_ASCII);
+}
+
+combination getCombination(char* image, int width, int height)
+{
+    combination reValue = {image, width, height};
+    return reValue;
+}
+
+void outputCombination(int posX, int posY, combination image)
+{
+    for (int i = 0; i < image.height; i++)
+    {
+        outputString(posX, posY, image.map + i * image.width);
+        posY++;
+    }
+}
+
+int  outputStringC(int x, int y, const char* str, WCON_COLOR fontColor, WCON_COLOR backColor)
+{
+    setFontColor(fontColor);
+    setBackgroundColor(backColor);
+    outputString(x, y, str);
+}
+
+void cleanCharxy(int x, int y)
+{
+    printf(WCON_ESC_CODE"[%d;%dH%s", x, y, " ");
+}
+
+void rcleanCharxy(int x, int y)
+{
+    printf(WCON_SAVE_CURSOR);
+    printf(WCON_ESC_CODE"[%d;%dH%s", x, y, " ");
+    printf(WCON_RE_CURSOR);
+}
+
+void cleanChar()
+{
+    printf(" ");
 }
