@@ -4,8 +4,9 @@
 
 ### 特征
 1. 易于使用可以用简单的函数，绘制出丰富的界面
-2. 简单的解决的控制台游戏刷新卡顿的问题
-3. 完全不需要了解任何API，就可以做到API的灵活程度
+![简易高亮选项](https://github.com/LightEverything/wconio/blob/main/resource/hight.png)
+3. 简单的解决的控制台游戏刷新卡顿的问题
+4. 完全不需要了解任何API，就可以做到API的灵活程度
 
 ### 使用文档
 
