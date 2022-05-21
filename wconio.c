@@ -126,7 +126,7 @@ void cleanline()
 // 移动控制台光标
 int moveCursor(int y, int x)
 {
-    printf(WCON_ESC_CODE"[%d;%dH\n", x, y);
+    printf(WCON_ESC_CODE"[%d;%dH", x, y);
     return 1;
 }
 
