@@ -1,7 +1,3 @@
-//
-// Created by Wanxi on 2022/3/29.
-//
-
 #include "wconio.h"
 
 HANDLE g_hOut = NULL;
@@ -161,20 +157,6 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style)
     printf(WCON_ASCII);
 }
 
-combination getCombination(char* image, int width, int height)
-{
-    combination reValue = {image, width, height};
-    return reValue;
-}
-
-void outputCombination(int posX, int posY, combination image)
-{
-    for (int i = 0; i < image.height; i++)
-    {
-        outputString(posX, posY, image.map + i * image.width);
-        posY++;
-    }
-}
 
 int  outputStringC(int x, int y, const char* str, WCON_COLOR fontColor, WCON_COLOR backColor)
 {

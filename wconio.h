@@ -1,6 +1,12 @@
-//
-// Created by Wanxi on 2022/3/29.
-//
+/**
+ * @file wconio.h
+ * @author lightevething (wanxinnb@outlook.com)
+ * @brief 这是一个终端库，更加方便输出
+ * @date 2022-05-31
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #ifndef WCONIO_H_WCONIO_H
 #define WCONIO_H_WCONIO_H
@@ -85,9 +91,5 @@ void cleanline();
 void cleanCharxy(int x, int y);
 void rcleanCharxy(int x, int y);
 void cleanChar();
-
-//构造combination(注意，这种构造函数返回的是combination而不是指针)
-void        outputCombination(int posX, int posY, combination image);
-combination getCombination(char* image, int width, int height);
 
 #endif //WCONIO_H_WCONIO_H
