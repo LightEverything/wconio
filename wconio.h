@@ -1,8 +1,8 @@
 /**
  * @file wconio.h
- * @author lightevething (wanxinnb@outlook.com)
- * @brief 这是一个终端库，更加方便输出
- * @date 2022-05-31
+ * @author lighteverthing (wanxinnb@outlook.com)
+ * @brief wconio的头文件
+ * @date 2022-06-04
  * 
  * @copyright Copyright (c) 2022
  * 
@@ -17,6 +17,12 @@
 #define WCON_DEFAULT_WIDTH  300
 #define WCON_DEFAULT_HEIGHT 400
 #define WCON_NOHIT          1
+
+// 矩形样式
+#define WCON_SNORMAL         0
+#define WCON_SCROSS          1
+
+#ifdef _WIN32
 
 // 常用命令
 #define WCON_ESC_CODE       "\x1b"
@@ -39,16 +45,21 @@
 #define WCON_WHITE          "255;255;255m"
 #define WCON_BLACK          "0;0;0m"
 
-// 矩形样式
-#define WCON_SNORMAL         0
-#define WCON_SCROSS          1
+#else 
+#endif
 
-#include <conio.h>
-#include <windows.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// 如果定义了window
+#ifdef _WIN32
+#include <conio.h>
+#include <windows.h>
+#else
+#include <curses.h>
+#endif
 
 struct combination
 {
@@ -61,7 +72,16 @@ typedef struct combination combination;
 void initwcon();
 void setConSize(int width, int height);
 
-// 控制台输入输出
+/**
+ * @brief 这个函数是对输入的封装，根据mode不同采取不同的输入方式
+ * 
+ * @param mode 是whatkey的输入模式
+ * -- 0 如果是0则非阻塞式输入
+ * -- 1 如果是1则阻塞式回显输入
+ * -- 2 否则就阻塞式非回显输入
+ * 
+ * @return char 如果mode = 0时，程序将会进入非阻塞式输入，每次调用将会返回一个值，如果没有按键，就返回WCON_NOHIT
+ */
 char whatKey(int mode);
 int  routputString(int x, int y, const char* str);
 int  outputString(int x, int y, const char* str);
@@ -80,10 +100,35 @@ int  setBackgroundRGB(int r, int g, int b);
 // 光标控制
 void hideCursor();
 void showCursor();
+void saveCursor();
+void reCursor();
 int  moveCursor(int x, int y);
 
-//绘制矩形
+/**
+ * @brief 用font的颜色绘制出不带边框的矩形
+ * 
+ * @param posX 矩形左上角的x坐标
+ * @param posY 矩形左上角的y坐标
+ * @param width 矩形的宽
+ * @param height 矩形的高
+ * @param style 矩形的样式
+ * -- WCON_SNORMAL 常规矩形样式
+ * -- WCON_SCROSS  实际矩形样式
+ */
 void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style);
+
+/**
+ * @brief 用font的颜色绘制出带边框的矩形
+ * 
+ * @param posX 矩形左上角的x坐标
+ * @param posY 矩形左上角的y坐标
+ * @param width 矩形的宽
+ * @param height 矩形的高
+ * @param style 矩形的样式
+ * -- WCON_SNORMAL 常规矩形样式
+ * -- WCON_SCROSS  实际矩形样式
+ */
+void drawFrameRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style);
 
 //清除所有
 void cleanAll();
