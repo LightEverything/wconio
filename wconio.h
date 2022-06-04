@@ -1,6 +1,12 @@
-//
-// Created by Wanxi on 2022/3/29.
-//
+/**
+ * @file wconio.h
+ * @author lighteverthing (wanxinnb@outlook.com)
+ * @brief wconio的头文件
+ * @date 2022-06-04
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #ifndef WCONIO_H_WCONIO_H
 #define WCONIO_H_WCONIO_H
@@ -11,6 +17,12 @@
 #define WCON_DEFAULT_WIDTH  300
 #define WCON_DEFAULT_HEIGHT 400
 #define WCON_NOHIT          1
+
+// 矩形样式
+#define WCON_SNORMAL         0
+#define WCON_SCROSS          1
+
+#ifdef _WIN32
 
 // 常用命令
 #define WCON_ESC_CODE       "\x1b"
@@ -33,16 +45,21 @@
 #define WCON_WHITE          "255;255;255m"
 #define WCON_BLACK          "0;0;0m"
 
-// 矩形样式
-#define WCON_SNORMAL         0
-#define WCON_SCROSS          1
+#else 
+#endif
 
-#include <conio.h>
-#include <windows.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// 如果定义了window
+#ifdef _WIN32
+#include <conio.h>
+#include <windows.h>
+#else
+#include <curses.h>
+#endif
 
 struct combination
 {

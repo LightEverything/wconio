@@ -1,15 +1,34 @@
-//
-// Created by Wanxi on 2022/3/29.
-//
+/**
+ * @file wconio.c
+ * @author lighteverthing (wanxinnb@outlook.com)
+ * @brief 这是wconio的定义
+ * @date 2022-06-04
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #include "wconio.h"
 
+#ifdef _WIN32
 HANDLE g_hOut = NULL;
+#else
+#endif
+
+/**
+ * @brief 全局变量.g_height表示控制台的长，g_width表示控制台的宽
+ * 
+ */
 int g_height = WCON_DEFAULT_HEIGHT;
 int g_width  = WCON_DEFAULT_WIDTH;
 
+/**
+ * @brief 根据不同的系统初始化控制台
+ * 
+ */
 void initwcon()
 {
+#ifdef _WIN32
     g_hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
     GetConsoleMode(g_hOut, &dwMode);
@@ -17,11 +36,15 @@ void initwcon()
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(g_hOut, dwMode);
     setConSize(WCON_DEFAULT_WIDTH, WCON_DEFAULT_HEIGHT);
+#else
+    initscr();
+#endif
 }
 
 // 更改窗口大小
 void setConSize(int width, int height)
 {
+
     char command[128];
 
     if (width < 0 && height < 0)
