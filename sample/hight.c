@@ -2,25 +2,25 @@
 #include "windows.h"
 #include "../wconio.h"
 
-char* title = "Í¼Êé¹ÜÀíÏµÍ³";  // ±êÌâ
+char* title = "Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³";  // ï¿½ï¿½ï¿½ï¿½
 char* xuanxiang[3] = {
-        "ÕâÊÇAÑ¡Ïî",
-        "ÕâÊÇBÑ¡Ïî",
-        "ÕâÊÇCÑ¡Ïî"
-};                  // Ñ¡Ïî
+        "ï¿½ï¿½ï¿½ï¿½AÑ¡ï¿½ï¿½",
+        "ï¿½ï¿½ï¿½ï¿½BÑ¡ï¿½ï¿½",
+        "ï¿½ï¿½ï¿½ï¿½CÑ¡ï¿½ï¿½"
+};                  // Ñ¡ï¿½ï¿½
 
 typedef struct node
 {
     int x, y;
-};              // ×ø±ê½Úµã
+};              // ï¿½ï¿½ï¿½ï¿½Úµï¿½
 
 struct node pos[3] = {
         {40, 23},
         {40, 26},
         {40, 29}
-};          // ×ø±êÎ»ÖÃ
+};          // ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 
-void hight(int hl)     // ¸ßÁÁs
+void hight(int hl)     // ï¿½ï¿½ï¿½ï¿½s
 {
     int pre = hl == 0 ? 2 : hl - 1;
 
@@ -31,7 +31,7 @@ void hight(int hl)     // ¸ßÁÁs
     setBackgroundColor(WCON_BLACK);
     setFontColor(WCON_WHITE);
 }
-void hightw(int hl)            // ¸ßÁÁw
+void hightw(int hl)            // ï¿½ï¿½ï¿½ï¿½w
 {
     int pre = hl == 2 ? 0 : hl + 1;
 
@@ -45,11 +45,11 @@ void hightw(int hl)            // ¸ßÁÁw
 
 int main()
 {
-    initwcon();     // ³õÊ¼»¯
-    setConSize(100, 50);    // ¿ØÖÆÌ¨´óÐ¡
-    setTitle("ÕâÊÇÒ»¸ö²âÊÔ");            // ÉèÖÃ±êÌâ
+    initwcon();     // ï¿½ï¿½Ê¼ï¿½ï¿½
+    setConSize(100, 50);    // ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½Ð¡
+    setTitle("ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");            // ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½
 
-    drawRect(30, 15, 40, 20, WCON_SNORMAL);     // »æÖÆ¾ØÐÎ
+    drawRect(30, 15, 40, 20, WCON_SNORMAL);     // ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
     outputString(40, 20, title);
     outputString(40, 23, xuanxiang[0]);
     outputString(40, 26, xuanxiang[1]);
@@ -57,7 +57,7 @@ int main()
 
     char c;
     int hl = 0;
-    while (c = whatKey(1))   // »ñÈ¡ÊäÈë
+    while (c = whatKey(1))   // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
     {
         if (c == 'w')
         {

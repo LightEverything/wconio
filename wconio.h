@@ -61,13 +61,25 @@
 #include <curses.h>
 #endif
 
-struct combination
+struct Combination
 {
     char* map;
     int width;
     int height;
 };
-typedef struct combination combination;
+
+/**
+ * @brief w是wconio的前缀, s表示的是结构体,pos是代表的是位置这个结构体
+ * 
+ */
+struct Wspos
+{
+    int x;
+    int y;
+};
+
+typedef struct Combination Combination;
+typedef struct Wspos Wspos;
 
 void initwcon();
 void setConSize(int width, int height);
@@ -88,6 +100,22 @@ int  outputString(int x, int y, const char* str);
 // 快速带颜色输出
 int  outputStringC(int x, int y, const char* str, WCON_COLOR fontColor, WCON_COLOR backColor);
 
+/**
+ * @brief 获取光标位置的char
+ * 
+ * @return char 
+ */
+char getCursorChar();
+
+/**
+ * @brief 获取(x，y)位置的字符
+ * 
+ * @param x x坐标
+ * @param y y坐标
+ * @return char 对应位置的字符
+ */
+char getxyChar(int x, int y);
+
 // 设置控制台标题
 int setTitle(const char* title);
 
@@ -98,11 +126,18 @@ int  setFontRGB(int r, int g, int b);
 int  setBackgroundRGB(int r, int g, int b);
 
 // 光标控制
-void hideCursor();
-void showCursor();
-void saveCursor();
-void reCursor();
-int  moveCursor(int x, int y);
+void   hideCursor();
+void   showCursor();
+void   saveCursor();
+void   reCursor();
+int    moveCursor(int x, int y);
+
+/**
+ * @brief 获取光标位置 
+ * 
+ * @return wspos 结构体
+ */
+Wspos  getConcursorPos();
 
 /**
  * @brief 用font的颜色绘制出不带边框的矩形

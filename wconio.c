@@ -136,6 +136,23 @@ int setTitle(const char* title)
     return 1;
 }
 
+char getxyChar(int x, int y)
+{
+    char c;
+    long unsigned int num;
+    COORD dwCoord = {x, y};
+
+    ReadConsoleOutputCharacter(g_hOut, &c, 1, dwCoord, &num);
+    return c;
+}
+
+char getCursorChar()
+{
+    Wspos pos = getConcursorPos();
+
+    return getxyChar(pos.x, pos.y);
+}
+
 void cleanAll()
 {
     printf(WCON_CLEARN);
@@ -174,6 +191,17 @@ void saveCursor()
 void reCursor()
 {
     printf(WCON_RE_CURSOR);
+}
+
+Wspos getConcursorPos()
+{
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(g_hOut, &consoleInfo);
+    Wspos reValue;
+    reValue.x = consoleInfo.dwCursorPosition.X;
+    reValue.y = consoleInfo.dwCursorPosition.Y;
+
+    return reValue;
 }
 
 // 根据样式绘制矩形
