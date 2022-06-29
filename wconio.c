@@ -11,7 +11,10 @@
 #include "wconio.h"
 
 #ifdef _WIN32
+
 HANDLE g_hOut = NULL;
+HANDLE g_hIn = NULL;
+
 #else
 #endif
 
@@ -30,12 +33,18 @@ void initwcon()
 {
 #ifdef _WIN32
     g_hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD dwMode = 0;
-    GetConsoleMode(g_hOut, &dwMode);
+    g_hIn = GetStdHandle(STD_INPUT_HANDLE);
+    setConSize(WCON_DEFAULT_WIDTH, WCON_DEFAULT_HEIGHT);
 
+    DWORD dwMode = 0;
+    DWORD oldmode = 0;
+
+    GetConsoleMode(g_hIn,&oldmode);
+    SetConsoleMode(g_hIn,oldmode| ENABLE_MOUSE_INPUT);
+
+    GetConsoleMode(g_hOut, &dwMode);
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(g_hOut, dwMode);
-    setConSize(WCON_DEFAULT_WIDTH, WCON_DEFAULT_HEIGHT);
 #else
     initscr();
 #endif
@@ -57,6 +66,17 @@ void setConSize(int width, int height)
     g_width = width;
     g_height = height;
     system(command);
+}
+
+void setConMode(int mode)
+{
+    COORD new_screen;
+
+    if( 0 == SetConsoleDisplayMode(g_hOut, mode, &new_screen))
+        printf("this system cant use this fuction");
+
+    g_height = new_screen.X;
+    g_width = new_screen.Y;
 }
 
 // 多用途输出
@@ -136,6 +156,15 @@ int setTitle(const char* title)
     return 1;
 }
 
+// 设置前景色和背景色反转
+int setColorReveral()
+{
+    CONSOLE_SCREEN_BUFFER_INFO now;
+    GetConsoleScreenBufferInfo(g_hOut, &now);
+    return SetConsoleTextAttribute(g_hOut, now.wAttributes ^ COMMON_LVB_REVERSE_VIDEO);
+}
+
+// 获取xy位置的字符
 char getxyChar(int x, int y)
 {
     char c;
@@ -247,7 +276,6 @@ void drawFrameRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE st
     printf(WCON_ASCII);
 }
 
-
 int  outputStringC(int x, int y, const char* str, WCON_COLOR fontColor, WCON_COLOR backColor)
 {
     setFontColor(fontColor);
@@ -270,4 +298,82 @@ void rcleanCharxy(int x, int y)
 void cleanChar()
 {
     printf(WCON_ESC_CODE"[1X");
+}
+
+static void dealEvent(WsmouseEvent* mouseEvent, INPUT_RECORD* r, DWORD* res)
+{
+    if (r->EventType == MOUSE_EVENT)
+    {
+        switch(r->Event.MouseEvent.dwEventFlags)
+        {
+        // 鼠标双击
+        case DOUBLE_CLICK:
+            if (r->Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
+                mouseEvent->state = WCON_MOUSE_DOUBLELEFT;
+            else if (r->Event.MouseEvent.dwButtonState == RIGHTMOST_BUTTON_PRESSED)
+                mouseEvent->state = WCON_MOUSE_DOUBLERIGHT;
+            break;
+
+        // 0 的时候是普通按下或者是松开
+        case 0:
+            if (r->Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
+                mouseEvent->state = WCON_MOUSE_CLICKLEFT;
+            else if (r->Event.MouseEvent.dwButtonState == RIGHTMOST_BUTTON_PRESSED)
+                mouseEvent->state = WCON_MOUSE_CLICKRIGHT;
+            break;
+
+        // 移动
+        case MOUSE_MOVED:
+            mouseEvent->state = WCON_MOUSE_MOVE;
+            break;
+
+        // 鼠标滚轮
+        case MOUSE_WHEELED:
+            mouseEvent->state = WCON_MOUSE_WHEELED;
+            break;
+        }
+
+        // 赋值坐标
+        mouseEvent->pos.x = r->Event.MouseEvent.dwMousePosition.X;
+        mouseEvent->pos.y = r->Event.MouseEvent.dwMousePosition.Y;
+        // 将此消息过滤
+        ReadConsoleInput(g_hIn, r, 1, res);
+    }
+    else 
+    {
+        // 如果不是
+        mouseEvent->state = WCON_MOUSE_NOCLICK;
+        mouseEvent->pos.x = -1;
+        mouseEvent->pos.y = -1;
+
+        // 如果不是键盘消息，则刷新
+        if (r->EventType != KEY_EVENT)
+            ReadConsoleInput(g_hIn, r, 1, res);
+
+        return ;
+    }
+}
+
+void getMouseEvent(WsmouseEvent* mouseEvent)
+{
+    // 获取输入的消息
+    INPUT_RECORD r;
+    DWORD        res;
+
+    PeekConsoleInput(g_hIn, &r, 1, &res);
+
+    if (mouseEvent == NULL)
+        return ;
+
+    // 如果没有读取到消息
+    if (res != 0)
+        dealEvent(mouseEvent, &r, &res);
+    else 
+    {
+        mouseEvent->state = WCON_MOUSE_NOCLICK;
+        mouseEvent->pos.x = -1;
+        mouseEvent->pos.y = -1;
+
+        return ;
+    }
 }
