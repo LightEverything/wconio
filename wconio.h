@@ -21,7 +21,7 @@
 // 矩形样式
 #define WCON_SNORMAL         0
 #define WCON_SCROSS          1
-#define WCON_STAR            2
+#define WCON_SSTAR            2
 
 #ifdef _WIN32
 
@@ -124,6 +124,9 @@ void setConSize(int width, int height);
  */
 void setConMode(int mode);
 
+int getConwidth();
+int getConheigh();
+
 /**
  * @brief 这个函数是对输入的封装，根据mode不同采取不同的输入方式
  * 
@@ -158,6 +161,14 @@ char getxyChar(int x, int y);
 
 // 设置控制台标题
 int setTitle(const char* title);
+
+/**
+ * @brief 设置固定的边距，在滚动终端时，边距不会滚动
+ * 
+ * @param top 滚动边框的顶部
+ * @param bottom 滚动边框的底部
+ */
+void setScrollRegion(int top, int bottom);
 
 // 文字设置
 int  setFontColor(WCON_COLOR color);

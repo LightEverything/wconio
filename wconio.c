@@ -79,6 +79,16 @@ void setConMode(int mode)
     g_width = new_screen.Y;
 }
 
+int getConwidth()
+{
+    return g_width;
+}
+
+int getConheight()
+{
+    return g_height;
+}
+
 // 多用途输出
 char whatKey(int mode)
 {
@@ -111,14 +121,14 @@ char whatKey(int mode)
 int  routputString(int y, int x, const char* str)
 {
     printf(WCON_SAVE_CURSOR);
-    printf(WCON_ESC_CODE"[%d;%dH%s", x, y, str);
+    printf(WCON_ESC_CODE"[%d;%dH%s", x + 1, y + 1, str);
     printf(WCON_RE_CURSOR);
     return 1;
 }
 
 int outputString(int y, int x, const char* str)
 {
-    printf(WCON_ESC_CODE"[%d;%dH%s", x, y, str);
+    printf(WCON_ESC_CODE"[%d;%dH%s", x + 1, y + 1, str);
     return 1;
 }
 
@@ -154,6 +164,14 @@ int setTitle(const char* title)
 {
     printf(WCON_SET_TITLE "%s\x07", title);
     return 1;
+}
+
+// 设置固定边框
+void setScrollRegion(int top, int bottom)
+{
+    saveCursor();
+    printf(WCON_ESC_CODE"[%d;%dr", top + 1, bottom + 1);
+    reCursor();
 }
 
 // 设置前景色和背景色反转
@@ -250,6 +268,12 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style)
             routputString(posX + width, posY, "n");
             routputString(posX + width, posY + width, "n");
             routputString(posX, posY + width, "n");
+            break;
+        case WCON_SSTAR:
+            routputString(posX, posY, "*");
+            routputString(posX + width, posY, "*");
+            routputString(posX + width, posY + width, "*");
+            routputString(posX, posY + width, "*");
     }
     printf(WCON_ASCII);
 }
@@ -259,18 +283,39 @@ void drawFrameRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE st
     drawRect(posX, posY, width, height, style);
     printf(WCON_DEC);
 
-    // 绘制边框
-    for (int i = 1; i < height; i ++)
+    switch(style)
     {
-        routputString(posX, posY + i, "x");
-        routputString(posX + width, posY + i, "x");
-    }
+    case WCON_SNORMAL:
+    case WCON_SCROSS:
+        // 绘制边框
+        for (int i = 1; i < height; i ++)
+        {
+            routputString(posX, posY + i, "x");
+            routputString(posX + width, posY + i, "x");
+        }
 
-    // 绘制顶部
-    for (int i = 1; i < height; i ++)
-    {
-        routputString(posX + i, posY, "q");
-        routputString(posX + i, posY + height, "q");
+        // 绘制顶部
+        for (int i = 1; i < height; i ++)
+        {
+            routputString(posX + i, posY, "q");
+            routputString(posX + i, posY + height, "q");
+        }
+        break;
+    case WCON_SSTAR:
+        // 绘制边框
+        for (int i = 1; i < height; i ++)
+        {
+            routputString(posX, posY + i, "*");
+            routputString(posX + width, posY + i, "*");
+        }
+
+        // 绘制顶部
+        for (int i = 1; i < height; i ++)
+        {
+            routputString(posX + i, posY, "*");
+            routputString(posX + i, posY + height, "*");
+        }
+        break;
     }
 
     printf(WCON_ASCII);
@@ -280,7 +325,7 @@ int  outputStringC(int x, int y, const char* str, WCON_COLOR fontColor, WCON_COL
 {
     setFontColor(fontColor);
     setBackgroundColor(backColor);
-    outputString(x, y, str);
+    return outputString(x, y, str);
 }
 
 void cleanCharxy(int x, int y)
