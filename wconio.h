@@ -191,6 +191,14 @@ int    moveCursor(int x, int y);
  */
 Wspos  getConcursorPos();
 
+/** 
+ * @brief 获取光标x、y位置
+ * 
+ * @return 光标所在位置的x、y坐标
+*/
+int getConcursorPosX();
+int getConcursorPosY();
+
 /**
  * @brief 用font的颜色绘制出不带边框的矩形
  * 

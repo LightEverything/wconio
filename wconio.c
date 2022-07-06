@@ -203,13 +203,13 @@ char getCursorChar()
 void cleanAll()
 {
     printf(WCON_CLEARN);
+    printf(WCON_ESC_CODE"[0;0H");
 }
 
 void cleanline()
 {
     printf(WCON_SAVE_CURSOR);
-    for (int i = 0; i < g_width; i++)
-        printf(" ");
+    printf(WCON_CLEARN_LINE"2K");
     printf(WCON_RE_CURSOR);
 }
 
@@ -249,6 +249,18 @@ Wspos getConcursorPos()
     reValue.y = consoleInfo.dwCursorPosition.Y;
 
     return reValue;
+}
+
+int getConcursorPosX() {
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(g_hOut, &consoleInfo);
+    return consoleInfo.dwCursorPosition.X;
+}
+
+int getConcursorPosY() {
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(g_hOut, &consoleInfo);
+    return consoleInfo.dwCursorPosition.Y;
 }
 
 // 根据样式绘制矩形
