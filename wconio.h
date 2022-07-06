@@ -201,6 +201,7 @@ Wspos  getConcursorPos();
  * @param style 矩形的样式
  * -- WCON_SNORMAL 常规矩形样式
  * -- WCON_SCROSS  实际矩形样式
+ * -- WCON_SSTAR   星形矩形样式
  */
 void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style);
 
@@ -214,6 +215,7 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style);
  * @param style 矩形的样式
  * -- WCON_SNORMAL 常规矩形样式
  * -- WCON_SCROSS  实际矩形样式
+ * -- WCON_SSTAR   星形矩形样式
  */
 void drawFrameRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style);
 

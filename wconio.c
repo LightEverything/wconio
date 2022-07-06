@@ -73,7 +73,7 @@ void setConMode(int mode)
     COORD new_screen;
 
     if( 0 == SetConsoleDisplayMode(g_hOut, mode, &new_screen))
-        printf("this system cant use this fuction");
+        printf("this system cann't use this fuction");
 
     g_height = new_screen.X;
     g_width = new_screen.Y;
@@ -104,7 +104,7 @@ char whatKey(int mode)
             return WCON_NOHIT;
     }
     // 如果是1则阻塞式回显输入
-    else if (mode == 2)
+    else if (mode == 1)
     {
         char c = getchar();
         return c;
