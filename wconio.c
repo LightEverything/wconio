@@ -266,14 +266,14 @@ void drawRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE style)
         case WCON_SCROSS:
             routputString(posX, posY, "n");
             routputString(posX + width, posY, "n");
-            routputString(posX + width, posY + width, "n");
-            routputString(posX, posY + width, "n");
+            routputString(posX + width, posY + height, "n");
+            routputString(posX, posY + height, "n");
             break;
         case WCON_SSTAR:
             routputString(posX, posY, "*");
             routputString(posX + width, posY, "*");
-            routputString(posX + width, posY + width, "*");
-            routputString(posX, posY + width, "*");
+            routputString(posX + width, posY + height, "*");
+            routputString(posX, posY + height, "*");
     }
     printf(WCON_ASCII);
 }
@@ -295,7 +295,7 @@ void drawFrameRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE st
         }
 
         // 绘制顶部
-        for (int i = 1; i < height; i ++)
+        for (int i = 1; i < width; i ++)
         {
             routputString(posX + i, posY, "q");
             routputString(posX + i, posY + height, "q");
@@ -310,7 +310,7 @@ void drawFrameRect(int posX, int posY, int width, int height, WCON_RECT_SYTLE st
         }
 
         // 绘制顶部
-        for (int i = 1; i < height; i ++)
+        for (int i = 1; i < width; i ++)
         {
             routputString(posX + i, posY, "*");
             routputString(posX + i, posY + height, "*");

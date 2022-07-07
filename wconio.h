@@ -16,12 +16,12 @@
 
 #define WCON_DEFAULT_WIDTH  70
 #define WCON_DEFAULT_HEIGHT 30
-#define WCON_NOHIT          1
+#define WCON_NOHIT          -1
 
 // 矩形样式
 #define WCON_SNORMAL         0
 #define WCON_SCROSS          1
-#define WCON_SSTAR            2
+#define WCON_SSTAR           2
 
 #ifdef _WIN32
 
@@ -59,6 +59,9 @@
 #define WCON_MOUSE_MOVE        5
 #define WCON_MOUSE_WHEELED     6
 
+// 按键行为
+#define WCON_KEY_ENTER         13 ///< window的换行是用cr结尾的
+
 #else 
 
 #endif
@@ -81,11 +84,16 @@ extern "C"
 {
 #endif
 
-struct Combination
+/**
+ * @brief 
+ * 
+ */
+struct Wcombination
 {
-    char* map;
-    int width;
-    int height;
+    char** map;              ///< 图像指针
+    int lines;               ///< 图像的行数字
+    int border_height;       ///< 碰撞边框的高(当为-1的时候，不启用碰撞)
+    int border_width;        ///< 碰撞边框的宽
 };
 
 /**
@@ -108,7 +116,7 @@ struct WsmouseEvent
     int state; ///< 鼠标的状态
 };
 
-typedef struct Combination Combination;
+typedef struct Wcombination Wcombination;
 typedef struct Wspos Wspos;
 typedef struct WsmouseEvent WsmouseEvent;
 
