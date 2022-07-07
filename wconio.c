@@ -73,7 +73,7 @@ void setConMode(int mode)
     COORD new_screen;
 
     if( 0 == SetConsoleDisplayMode(g_hOut, mode, &new_screen))
-        printf("this system cant use this fuction");
+        printf("this system cann't use this fuction");
 
     g_height = new_screen.X;
     g_width = new_screen.Y;
@@ -104,7 +104,7 @@ char whatKey(int mode)
             return WCON_NOHIT;
     }
     // 如果是1则阻塞式回显输入
-    else if (mode == 2)
+    else if (mode == 1)
     {
         char c = getchar();
         return c;
@@ -203,13 +203,13 @@ char getCursorChar()
 void cleanAll()
 {
     printf(WCON_CLEARN);
+    printf(WCON_ESC_CODE"[0;0H");
 }
 
 void cleanline()
 {
     printf(WCON_SAVE_CURSOR);
-    for (int i = 0; i < g_width; i++)
-        printf(" ");
+    printf(WCON_CLEARN_LINE"2K");
     printf(WCON_RE_CURSOR);
 }
 
@@ -249,6 +249,18 @@ Wspos getConcursorPos()
     reValue.y = consoleInfo.dwCursorPosition.Y;
 
     return reValue;
+}
+
+int getConcursorPosX() {
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(g_hOut, &consoleInfo);
+    return consoleInfo.dwCursorPosition.X;
+}
+
+int getConcursorPosY() {
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(g_hOut, &consoleInfo);
+    return consoleInfo.dwCursorPosition.Y;
 }
 
 // 根据样式绘制矩形
